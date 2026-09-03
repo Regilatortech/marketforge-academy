@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#0b1020">
+<title>MarketForge Academy | Trading Simulator & School</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+:root{
+  --bg:#080b13;--bg2:#0d1220;--panel:#111827;--panel2:#151d2d;--line:#253049;
+  --text:#eef2f8;--muted:#8e9ab0;--accent:#8b5cf6;--accent2:#22d3ee;
+  --good:#32d583;--bad:#ff647c;--warn:#f6c453;--gold:#e7b95b;
+  --shadow:0 18px 50px rgba(0,0,0,.28);--radius:16px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(circle at 85% -10%,rgba(139,92,246,.13),transparent 32%),linear-gradient(135deg,#070a11,#0b1020 55%,#080b13);color:var(--text);font-family:"DM Sans",system-ui,sans-serif;min-height:100vh}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+a{color:inherit}
+.hidden{display:none!important}
+.app{min-height:100vh}
+.topbar{height:68px;position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:18px;padding:0 22px;background:rgba(8,11,19,.9);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.06)}
+.brand{display:flex;align-items:center;gap:11px;min-width:230px}
+.brand-mark{width:37px;height:37px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),#4f46e5);box-shadow:0 8px 24px rgba(139,92,246,.25)}
+.brand strong{font:800 16px Manrope,sans-serif;letter-spacing:-.4px}.brand small{display:block;color:var(--muted);font-size:10px;margin-top:1px}
+.search{flex:1;max-width:430px;position:relative}.search i{position:absolute;left:14px;top:12px;color:#66728a}.search input{width:100%;background:#0e1523;border:1px solid var(--line);color:var(--text);border-radius:11px;padding:10px 14px 10px 38px;outline:none}.search input:focus{border-color:#5969a0}
+.top-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+.icon-btn,.avatar-btn{width:40px;height:40px;border:1px solid var(--line);background:#0e1523;color:#cbd5e1;border-radius:11px}
+.avatar-btn{border:0;background:linear-gradient(135deg,#334155,#64748b);font-weight:800}
+.layout{display:grid;grid-template-columns:245px 1fr;max-width:1500px;margin:auto}
+.sidebar{border-right:1px solid rgba(255,255,255,.06);min-height:calc(100vh - 68px);padding:18px 13px;position:sticky;top:68px;height:calc(100vh - 68px)}
+.nav-label{font-size:10px;color:#5f6b80;text-transform:uppercase;letter-spacing:1.2px;padding:13px 12px 7px}
+.nav-btn{width:100%;display:flex;align-items:center;gap:11px;border:0;background:transparent;color:#8f9aae;padding:11px 12px;border-radius:10px;text-align:left;margin:2px 0;font-weight:600}
+.nav-btn i{width:18px;text-align:center}.nav-btn:hover{background:#101827;color:#fff}.nav-btn.active{background:linear-gradient(90deg,rgba(139,92,246,.19),rgba(139,92,246,.05));color:#fff;box-shadow:inset 2px 0 var(--accent)}
+.side-card{margin:18px 5px 0;padding:14px;border:1px solid var(--line);border-radius:13px;background:rgba(255,255,255,.025)}
+.progress{height:6px;background:#20283a;border-radius:99px;overflow:hidden}.progress>span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px}
+.main{padding:28px;min-width:0}.view{display:none}.view.active{display:block}
+.eyebrow{color:#aab5c8;font-size:12px;font-weight:700;letter-spacing:.4px}.title{font:800 30px Manrope;margin:5px 0 6px;letter-spacing:-1px}.subtitle{color:var(--muted);margin:0 0 24px}
+.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
+.card{background:linear-gradient(180deg,rgba(20,28,43,.94),rgba(13,19,31,.94));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.card.pad{padding:18px}.stat{padding:18px}.stat-top{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px}.stat-icon{width:35px;height:35px;display:grid;place-items:center;border-radius:10px;background:rgba(139,92,246,.12);color:#b79bff}.stat-value{font:800 24px Manrope;margin-top:13px}.stat-note{font-size:11px;color:var(--muted);margin-top:5px}.up{color:var(--good)!important}.down{color:var(--bad)!important}.gold{color:var(--gold)!important}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:24px 0 12px}.section-head h3{margin:0;font:700 17px Manrope}.section-head span{font-size:12px;color:var(--muted)}
+.btn{border:1px solid var(--line);background:#121a29;color:#e8edf5;padding:10px 14px;border-radius:10px;font-weight:700}.btn:hover{border-color:#59698c}.btn.primary{border:0;background:linear-gradient(135deg,var(--accent),#6d28d9);box-shadow:0 8px 20px rgba(109,40,217,.2)}.btn.good{border-color:rgba(50,213,131,.35);background:rgba(50,213,131,.08);color:var(--good)}.btn.danger{border-color:rgba(255,100,124,.35);background:rgba(255,100,124,.08);color:var(--bad)}.btn.small{padding:7px 10px;font-size:12px}
+.hero{padding:23px;display:flex;justify-content:space-between;gap:20px;align-items:center;background:linear-gradient(110deg,rgba(139,92,246,.16),rgba(34,211,238,.05) 50%,rgba(255,255,255,.02));overflow:hidden;position:relative}.hero:after{content:"";position:absolute;width:280px;height:280px;border-radius:50%;right:-110px;top:-120px;background:rgba(139,92,246,.12);filter:blur(4px)}.hero h2{font:800 25px Manrope;margin:5px 0}.hero p{color:#a7b2c4;max-width:700px;margin:0;line-height:1.6;font-size:13px}.hero-actions{display:flex;gap:9px;flex-wrap:wrap;position:relative;z-index:1}
+.market-row{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;align-items:center;gap:12px;padding:14px;border-bottom:1px solid rgba(255,255,255,.055)}.market-row:last-child{border-bottom:0}.symbol{font-weight:800}.company{font-size:11px;color:var(--muted);margin-top:2px}.price{text-align:right;font-weight:800}.change{text-align:right;font-size:12px}.spark{height:32px}
+.chart-card{padding:17px}.chart-head{display:flex;justify-content:space-between;align-items:flex-start}.chart-title{font:700 18px Manrope}.chart-meta{color:var(--muted);font-size:12px}.chart-wrap{height:245px;margin-top:10px;position:relative}.chart-wrap canvas{width:100%;height:100%}
+.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{border:1px solid var(--line);padding:5px 8px;border-radius:8px;color:#aeb9ca;font-size:11px}.chip.active{border-color:rgba(139,92,246,.6);color:#d7cbff;background:rgba(139,92,246,.09)}
+.lesson{padding:17px;min-height:180px;display:flex;flex-direction:column}.lesson-num{font-size:10px;color:#7c879a;text-transform:uppercase;letter-spacing:1px}.lesson h4{font:700 16px Manrope;margin:9px 0}.lesson p{color:#9ca8bb;font-size:12px;line-height:1.6;margin:0}.lesson-footer{margin-top:auto;padding-top:15px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted)}
+.note{padding:16px}.note h4{margin:0 0 7px;font:700 15px Manrope}.note p{color:#9da9bb;line-height:1.65;font-size:12px;margin:0}.note .tag{display:inline-block;margin-top:12px;padding:4px 7px;background:#171f30;border:1px solid var(--line);border-radius:6px;color:#8793a7;font-size:10px}
+.form{display:grid;gap:10px}.field label{display:block;color:#8995a9;font-size:11px;margin:0 0 6px}.field input,.field select,.field textarea{width:100%;background:#0d1421;border:1px solid var(--line);border-radius:9px;color:var(--text);padding:10px;outline:none}.field textarea{min-height:100px;resize:vertical}
+.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:620px}.table th,.table td{padding:11px 10px;border-bottom:1px solid rgba(255,255,255,.055);font-size:12px;text-align:left}.table th{color:#738097;font-weight:700}.table td{color:#c9d1df}
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:15px}.tab{border:1px solid var(--line);background:#0f1725;color:#8995a9;border-radius:9px;padding:8px 11px;font-size:11px;font-weight:700}.tab.active{color:#fff;border-color:#6553a7;background:rgba(139,92,246,.11)}
+.quiz-top{display:flex;justify-content:space-between;gap:15px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line)}.quiz-question{padding:22px}.question-number{font-size:11px;color:#8d99ac}.quiz-question h2{font:700 21px Manrope;line-height:1.45;margin:8px 0 19px}.option{width:100%;padding:13px;text-align:left;border:1px solid var(--line);background:#0e1624;color:#d8deea;border-radius:10px;margin:6px 0}.option:hover{border-color:#63729a;background:#121d2e}.option.correct{border-color:var(--good);background:rgba(50,213,131,.1);color:#b9f5d5}.option.wrong{border-color:var(--bad);background:rgba(255,100,124,.1);color:#ffc4ce}.feedback{min-height:25px;margin-top:12px;font-size:12px}
+.order-grid{display:grid;grid-template-columns:1fr 1.45fr 1fr;gap:16px}.book-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;font-size:11px;padding:6px 0}.book-row span:nth-child(2){text-align:center}.book-row span:last-child{text-align:right}.book-head{color:#69758b;text-transform:uppercase;font-size:9px;border-bottom:1px solid var(--line);padding-bottom:7px}.buy-side{color:var(--good)}.sell-side{color:var(--bad)}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 8px;border-radius:7px;background:#151e2d;border:1px solid var(--line);font-size:10px;color:#aeb8c8}.badge i{color:var(--gold)}
+.achievement{padding:15px;display:flex;gap:12px;align-items:center}.achievement-icon{width:40px;height:40px;border-radius:11px;background:rgba(231,185,91,.1);color:var(--gold);display:grid;place-items:center}.achievement h4{margin:0;font-size:13px}.achievement p{margin:3px 0 0;color:var(--muted);font-size:10px}
+.cert{background:#f7f3e8;color:#252525;padding:44px;border:9px double #c99b3b;position:relative;text-align:center;max-width:800px;margin:auto;box-shadow:0 20px 50px rgba(0,0,0,.3)}.cert:before{content:"";position:absolute;inset:14px;border:1px solid #d8bd78;pointer-events:none}.cert-kicker{letter-spacing:3px;font-size:11px;color:#756646}.cert h1{font:800 37px Georgia,serif;margin:17px 0 10px}.cert-name{font:700 29px Georgia,serif;color:#a27623;border-bottom:1px solid #c99b3b;display:inline-block;padding:8px 28px}.cert p{font:italic 13px Georgia;line-height:1.7;color:#5d574c}.cert-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:28px;font-size:11px}.cert-grid strong{display:block;font-size:14px;margin-bottom:4px}
+.modal{position:fixed;inset:0;background:rgba(2,5,10,.82);backdrop-filter:blur(9px);display:flex;align-items:center;justify-content:center;padding:18px;z-index:100;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .2s ease,visibility .2s ease}.modal.open{visibility:visible;opacity:1;pointer-events:auto}.modal-box{position:relative;z-index:1;width:min(850px,100%);max-height:90vh;overflow:auto;background:#101725;border:1px solid var(--line);border-radius:17px;box-shadow:0 30px 100px rgba(0,0,0,.55);padding:20px}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.modal-head h3{margin:0;font:700 18px Manrope}
+.toast{position:fixed;right:20px;bottom:20px;background:#151f30;border:1px solid var(--line);padding:12px 15px;border-radius:10px;box-shadow:var(--shadow);z-index:200;font-size:12px;transform:translateY(20px);opacity:0;pointer-events:none;transition:.25s}.toast.show{transform:none;opacity:1}
+.footer{color:#59657a;font-size:10px;text-align:center;padding:30px 0 8px}.watermark{position:fixed;right:14px;bottom:10px;font-size:10px;color:#6d5d91;z-index:80;pointer-events:none}
+/* Startup splash: visible briefly, then completely removed from interaction. */
+.splash-screen{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 35%,rgba(139,92,246,.22),transparent 35%),#070a11;opacity:1;visibility:visible;pointer-events:auto;transition:opacity .35s ease,visibility .35s ease}.splash-screen.hide{opacity:0;visibility:hidden;pointer-events:none}.splash-inner{text-align:center;padding:28px}.splash-mark{width:72px;height:72px;margin:0 auto 16px;border-radius:20px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),#4f46e5);box-shadow:0 14px 40px rgba(139,92,246,.35);font-size:30px}.splash-title{font:800 25px Manrope;color:var(--text)}.splash-sub{margin-top:7px;color:var(--muted);font-size:12px}.splash-loader{width:150px;height:3px;margin:20px auto 0;background:#1b2435;border-radius:99px;overflow:hidden}.splash-loader span{display:block;width:45%;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));animation:splashLoad 1.05s ease-in-out infinite}@keyframes splashLoad{0%{transform:translateX(-100%)}100%{transform:translateX(340%)}}
+@media(max-width:1100px){.g4{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:72px 1fr}.brand{min-width:auto}.brand-text,.nav-label,.nav-btn span,.side-card{display:none}.nav-btn{justify-content:center}.sidebar{padding:16px 8px}.main{padding:20px}.order-grid{grid-template-columns:1fr 1fr}.order-grid>.card:nth-child(2){grid-column:1/-1}}
+@media(max-width:760px){.topbar{padding:0 12px;height:60px}.search{display:none}.layout{display:block}.sidebar{position:fixed;left:0;right:0;bottom:0;top:auto;height:61px;z-index:60;background:rgba(8,11,19,.96);border-right:0;border-top:1px solid var(--line);padding:5px}.sidebar nav{display:flex;justify-content:space-around}.nav-label,.side-card,.brand-text{display:none}.nav-btn{display:flex;flex-direction:column;gap:3px;padding:7px 3px;margin:0;width:auto;font-size:9px}.nav-btn i{font-size:15px}.main{padding:15px 13px 80px}.g4,.g3,.g2{grid-template-columns:1fr}.hero{display:block}.hero-actions{margin-top:15px}.title{font-size:24px}.market-row{grid-template-columns:1.5fr 1fr 1fr}.market-row>.spark{display:none}.order-grid{grid-template-columns:1fr}.order-grid>.card:nth-child(2){grid-column:auto}.cert{padding:28px 17px}.cert h1{font-size:28px}.cert-grid{grid-template-columns:1fr}.top-actions .icon-btn:nth-child(1){display:none}}
+@media print{body{background:#fff!important;color:#111}.topbar,.sidebar,.watermark,.no-print{display:none!important}.main{padding:0}.view{display:none!important}#certificate.view{display:block!important}.card{box-shadow:none;border:0}.cert{box-shadow:none}}
+</style>
+</head>
+<body>
+<div id="splashScreen" class="splash-screen" aria-label="Loading MarketForge">
+  <div class="splash-inner">
+    <div class="splash-mark"><i class="fa-solid fa-chart-line"></i></div>
+    <div class="splash-title">MarketForge</div>
+    <div class="splash-sub">Academy &amp; Simulator • Lod of tech</div>
+    <div class="splash-loader"><span></span></div>
+  </div>
+</div>
+<div class="app">
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark"><i class="fa-solid fa-chart-line"></i></div>
+    <div class="brand-text"><strong>MarketForge</strong><small>Academy & Simulator</small></div>
+  </div>
+  <div class="search"><i class="fa-solid fa-magnifying-glass"></i><input id="globalSearch" placeholder="Search lessons, markets, notes..."></div>
+  <div class="top-actions">
+    <button class="icon-btn" id="themeBtn" title="Toggle appearance"><i class="fa-solid fa-moon"></i></button>
+    <button class="icon-btn" id="helpBtn" title="Help"><i class="fa-regular fa-circle-question"></i></button>
+    <button class="avatar-btn" id="avatarBtn">RR</button>
+  </div>
+</header>
+
+<div class="layout">
+<aside class="sidebar">
+  <nav>
+    <div class="nav-label">Workspace</div>
+    <button class="nav-btn active" data-view="dashboard"><i class="fa-solid fa-grid-2"></i><span>Dashboard</span></button>
+    <button class="nav-btn" data-view="academy"><i class="fa-solid fa-book-open"></i><span>Academy</span></button>
+    <button class="nav-btn" data-view="markets"><i class="fa-solid fa-chart-simple"></i><span>Markets</span></button>
+    <button class="nav-btn" data-view="simulator"><i class="fa-solid fa-arrow-right-arrow-left"></i><span>Simulator</span></button>
+    <div class="nav-label">Study</div>
+    <button class="nav-btn" data-view="quiz"><i class="fa-solid fa-brain"></i><span>Exam Room</span></button>
+    <button class="nav-btn" data-view="notes"><i class="fa-solid fa-note-sticky"></i><span>Notes</span></button>
+    <button class="nav-btn" data-view="journal"><i class="fa-solid fa-book"></i><span>Journal</span></button>
+    <div class="nav-label">Account</div>
+    <button class="nav-btn" data-view="certificate"><i class="fa-solid fa-certificate"></i><span>Certificate</span></button>
+    <button class="nav-btn" data-view="profile"><i class="fa-solid fa-user"></i><span>Profile</span></button>
+  </nav>
+  <div class="side-card">
+    <div style="font-size:11px;font-weight:700">Course progress</div>
+    <div style="display:flex;justify-content:space-between;color:var(--muted);font-size:10px;margin:7px 0"><span id="sideProgressText">0%</span><span>12 modules</span></div>
+    <div class="progress"><span id="sideProgress" style="width:0%"></span></div>
+  </div>
+</aside>
+
+<main class="main">
+<section id="dashboard" class="view active">
+  <div class="eyebrow">WELCOME BACK</div>
+  <h1 class="title">Good to see you, <span id="helloName">Reginald</span>.</h1>
+  <p class="subtitle">Build market knowledge, practice decisions and track your progress without risking real money.</p>
+
+  <div class="card hero">
+    <div>
+      <div class="eyebrow">TODAY'S TRAINING</div>
+      <h2>Learn the market. Then test your decisions.</h2>
+      <p>MarketForge combines structured lessons, a simulated market, randomized exams and a trading journal in one learning workspace.</p>
+    </div>
+    <div class="hero-actions">
+      <button class="btn primary" data-go="academy"><i class="fa-solid fa-play"></i> Continue Academy</button>
+      <button class="btn" data-go="simulator"><i class="fa-solid fa-chart-line"></i> Open Simulator</button>
+    </div>
+  </div>
+
+  <div class="grid g4" style="margin-top:16px">
+    <div class="card stat"><div class="stat-top"><span>Simulation Cash</span><span class="stat-icon"><i class="fa-solid fa-wallet"></i></span></div><div class="stat-value">$<span id="dashCash">10,000.00</span></div><div class="stat-note">Starting virtual capital</div></div>
+    <div class="card stat"><div class="stat-top"><span>Portfolio Value</span><span class="stat-icon"><i class="fa-solid fa-briefcase"></i></span></div><div class="stat-value">$<span id="dashPortfolio">0.00</span></div><div class="stat-note" id="dashPL">No open positions</div></div>
+    <div class="card stat"><div class="stat-top"><span>Learning XP</span><span class="stat-icon"><i class="fa-solid fa-bolt"></i></span></div><div class="stat-value"><span id="dashXP">0</span> XP</div><div class="stat-note">Level <span id="dashLevel">1</span> learner</div></div>
+    <div class="card stat"><div class="stat-top"><span>Course Progress</span><span class="stat-icon"><i class="fa-solid fa-graduation-cap"></i></span></div><div class="stat-value"><span id="dashProgress">0</span>%</div><div class="stat-note">12 core modules</div></div>
+  </div>
+
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card chart-card">
+      <div class="chart-head"><div><div class="chart-title">Market Pulse</div><div class="chart-meta">Simulated broad-market movement</div></div><div class="badge"><i class="fa-solid fa-circle" style="font-size:6px;color:var(--good)"></i> LIVE SIM</div></div>
+      <div class="chart-wrap"><canvas id="dashboardChart"></canvas></div>
+    </div>
+    <div class="card pad">
+      <div class="section-head" style="margin-top:0"><h3>Watchlist</h3><span>Live simulation</span></div>
+      <div id="dashboardWatch"></div>
+    </div>
+  </div>
+
+  <div class="section-head"><h3>Recommended next steps</h3><span>Designed for steady progress</span></div>
+  <div class="grid g3">
+    <div class="card pad"><span class="badge">01 • FOUNDATION</span><h4 style="margin:12px 0 7px">Understand order flow</h4><p style="color:var(--muted);font-size:12px;line-height:1.6">Learn bids, asks, liquidity and why the last traded price changes.</p><button class="btn small" data-go="academy">Open lesson</button></div>
+    <div class="card pad"><span class="badge">02 • PRACTICE</span><h4 style="margin:12px 0 7px">Make your first paper trade</h4><p style="color:var(--muted);font-size:12px;line-height:1.6">Use virtual capital and record the reason behind every simulated trade.</p><button class="btn small" data-go="simulator">Trade virtually</button></div>
+    <div class="card pad"><span class="badge">03 • REVIEW</span><h4 style="margin:12px 0 7px">Test your knowledge</h4><p style="color:var(--muted);font-size:12px;line-height:1.6">Take a randomized exam and review explanations instead of memorizing answers.</p><button class="btn small" data-go="quiz">Start exam</button></div>
+  </div>
+</section>
+
+<section id="academy" class="view">
+  <div class="eyebrow">TRADING SCHOOL</div><h1 class="title">Academy</h1><p class="subtitle">A practical curriculum from market basics to risk, analysis and portfolio construction.</p>
+  <div class="card pad" style="margin-bottom:16px">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:15px"><div><b>Overall course progress</b><div style="font-size:11px;color:var(--muted);margin-top:4px">Complete a module to update your progress.</div></div><strong id="academyPct">0%</strong></div>
+    <div class="progress" style="margin-top:11px"><span id="academyProgress" style="width:0%"></span></div>
+  </div>
+  <div class="grid g3" id="lessonGrid"></div>
+</section>
+
+<section id="markets" class="view">
+  <div class="eyebrow">SIMULATED MARKET</div><h1 class="title">Markets</h1><p class="subtitle">Explore prices, liquidity and simulated order-book conditions. Quotes are fictional and for education only.</p>
+  <div class="grid g4" id="marketStats"></div>
+  <div class="card" style="margin-top:16px"><div class="section-head" style="padding:17px 17px 0"><h3>Market Watch</h3><span>Updates every 2.5 seconds</span></div><div id="fullMarket"></div></div>
+</section>
+
+<section id="simulator" class="view">
+  <div class="eyebrow">PAPER TRADING</div><h1 class="title">Trading Simulator</h1><p class="subtitle">Practice execution, sizing and portfolio management with virtual money.</p>
+  <div class="grid g4">
+    <div class="card stat"><div class="stat-top"><span>Cash</span><span class="stat-icon"><i class="fa-solid fa-money-bill-wave"></i></span></div><div class="stat-value">$<span id="simCash">10,000.00</span></div></div>
+    <div class="card stat"><div class="stat-top"><span>Positions</span><span class="stat-icon"><i class="fa-solid fa-layer-group"></i></span></div><div class="stat-value"><span id="simPositions">0</span></div></div>
+    <div class="card stat"><div class="stat-top"><span>Portfolio</span><span class="stat-icon"><i class="fa-solid fa-chart-pie"></i></span></div><div class="stat-value">$<span id="simPort">0.00</span></div></div>
+    <div class="card stat"><div class="stat-top"><span>Net Worth</span><span class="stat-icon"><i class="fa-solid fa-scale-balanced"></i></span></div><div class="stat-value">$<span id="simNet">10,000.00</span></div></div>
+  </div>
+  <div class="order-grid" style="margin-top:16px">
+    <div class="card pad"><div class="section-head" style="margin-top:0"><h3>Market Watch</h3></div><div id="simWatch"></div></div>
+    <div class="card chart-card">
+      <div class="chart-head"><div><div class="chart-title"><span id="selectedSym">RTI</span> <span id="selectedPrice">$145.20</span></div><div class="chart-meta" id="selectedName">Regilator Tech Industries</div></div><div class="chips"><button class="chip active">1D</button><button class="chip">1W</button><button class="chip">1M</button></div></div>
+      <div class="chart-wrap"><canvas id="tradeChart"></canvas></div>
+      <div class="card" style="background:#0b111d;padding:13px;border-radius:12px;margin-top:10px;border-color:#202a3d">
+        <div class="grid g3">
+          <div class="field"><label>Quantity</label><input id="tradeQty" type="number" min="1" value="1"></div>
+          <div><label style="display:block;color:#8995a9;font-size:11px;margin-bottom:6px">Estimated cost</label><div style="font-weight:800;padding:10px 0" id="estimatedCost">$145.20</div></div>
+          <div style="display:flex;gap:7px;align-items:end"><button class="btn good" style="flex:1" id="buyBtn">Buy</button><button class="btn danger" style="flex:1" id="sellBtn">Sell</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="card pad"><div class="section-head" style="margin-top:0"><h3>Order Book</h3><span id="bookSymbol">RTI</span></div><div class="book-row book-head"><span>Bid</span><span>Size</span><span>Ask</span></div><div id="orderBook"></div><div style="border-top:1px solid var(--line);margin-top:9px;padding-top:10px;font-size:10px;color:var(--muted)">This order book is generated for simulation practice.</div></div>
+  </div>
+  <div class="card" style="margin-top:16px"><div class="section-head" style="padding:17px 17px 0"><h3>Open Positions</h3><button class="btn small" id="resetSim">Reset Simulation</button></div><div class="table-wrap" style="padding:0 17px 10px"><table class="table"><thead><tr><th>Asset</th><th>Shares</th><th>Avg Cost</th><th>Current</th><th>Market Value</th><th>P/L</th></tr></thead><tbody id="positionsBody"></tbody></table></div></div>
+</section>
+
+<section id="quiz" class="view">
+  <div class="eyebrow">ASSESSMENT CENTER</div><h1 class="title">Exam Room</h1><p class="subtitle">Randomized questions with explanations. A passing result requires 800 XP from the current exam.</p>
+  <div class="grid g2">
+    <div class="card pad"><div class="section-head" style="margin-top:0"><h3>Exam settings</h3></div>
+      <div class="form">
+        <div class="field"><label>Number of questions</label><select id="quizLength"><option value="10">10 questions</option><option value="15" selected>15 questions</option><option value="20">20 questions</option></select></div>
+        <div class="field"><label>Difficulty mix</label><select id="quizDifficulty"><option value="mixed">Mixed difficulty</option><option value="foundation">Mostly foundation</option><option value="advanced">Mostly advanced</option></select></div>
+        <button class="btn primary" id="startQuiz"><i class="fa-solid fa-play"></i> Begin randomized exam</button>
+      </div>
+    </div>
+    <div class="card pad"><div class="section-head" style="margin-top:0"><h3>Current profile</h3></div><div style="display:flex;justify-content:space-between;margin:10px 0;font-size:12px"><span>Lifetime XP</span><b id="quizXP">0</b></div><div style="display:flex;justify-content:space-between;margin:10px 0;font-size:12px"><span>Level</span><b id="quizLevel">1</b></div><div style="display:flex;justify-content:space-between;margin:10px 0;font-size:12px"><span>Best exam score</span><b id="bestScore">0 XP</b></div><div class="progress" style="margin-top:13px"><span id="quizProgressBar" style="width:0%"></span></div></div>
+  </div>
+  <div class="card hidden" id="quizPanel" style="margin-top:16px"></div>
+</section>
+
+<section id="notes" class="view">
+  <div class="eyebrow">KNOWLEDGE BASE</div><h1 class="title">Study Notes</h1><p class="subtitle">Short explanations you can revisit before trading or sitting an exam.</p>
+  <div class="card pad" style="margin-bottom:15px"><div class="field"><label>Find a topic</label><input id="noteSearch" placeholder="e.g. liquidity, RSI, diversification"></div></div>
+  <div class="grid g3" id="notesGrid"></div>
+</section>
+
+<section id="journal" class="view">
+  <div class="eyebrow">DECISION JOURNAL</div><h1 class="title">Trading Journal</h1><p class="subtitle">Record the thesis, risk and outcome of each practice decision. Good traders review process, not just profit.</p>
+  <div class="grid g2">
+    <div class="card pad"><div class="section-head" style="margin-top:0"><h3>New journal entry</h3></div>
+      <div class="form">
+        <div class="grid g2"><div class="field"><label>Asset</label><select id="journalAsset"></select></div><div class="field"><label>Direction</label><select id="journalDirection"><option>Long</option><option>Short</option><option>Watch only</option></select></div></div>
+        <div class="grid g2"><div class="field"><label>Entry idea</label><input id="journalEntry" placeholder="What made this setup interesting?"></div><div class="field"><label>Invalidation / stop idea</label><input id="journalStop" placeholder="What would prove you wrong?"></div></div>
+        <div class="field"><label>Reasoning</label><textarea id="journalReason" placeholder="Write the market context, catalyst, technical structure, risk and alternative scenario..."></textarea></div>
+        <button class="btn primary" id="saveJournal">Save entry</button>
+      </div>
+    </div>
+    <div class="card pad"><div class="section-head" style="margin-top:0"><h3>Journal checklist</h3></div>
+      <div class="note" style="background:#0d1421;border-radius:10px;margin-bottom:8px"><b>Before the trade</b><p>What is the thesis? Where is the invalidation? How much capital is at risk? Is the setup worth taking?</p></div>
+      <div class="note" style="background:#0d1421;border-radius:10px"><b>After the trade</b><p>Did you follow your plan? What was controllable? What would you change if you saw the same setup tomorrow?</p></div>
+    </div>
+  </div>
+  <div class="section-head"><h3>Saved entries</h3><span id="journalCount">0 entries</span></div>
+  <div id="journalList" class="grid g2"></div>
+</section>
+
+<section id="certificate" class="view">
+  <div class="eyebrow">ACHIEVEMENT</div><h1 class="title">Certificate</h1><p class="subtitle">Complete the required course and pass an exam to unlock the certificate preview.</p>
+  <div id="certLocked" class="card pad" style="text-align:center;padding:45px 20px"><i class="fa-solid fa-lock" style="font-size:30px;color:var(--muted)"></i><h3>Certificate currently locked</h3><p style="color:var(--muted);font-size:12px">Required: 12 completed modules and an exam score of at least 800 XP.</p><button class="btn primary" data-go="academy">Continue learning</button></div>
+  <div id="certUnlocked" class="hidden">
+    <div class="cert" id="certificatePaper"><div class="cert-kicker">MARKETFORGE ACADEMY</div><h1>Certificate of Achievement</h1><p>This certifies that</p><div class="cert-name" id="certName">Reginald Richard Mutungwazi</div><p>has completed the MarketForge core trading curriculum and passed the simulated market assessment covering market structure, risk management, technical analysis and portfolio fundamentals.</p><div class="cert-grid"><div><strong id="certXP">0 XP</strong>Assessment score</div><div><strong>Verified</strong>Learning status</div><div><strong id="certDate">2026</strong>Issue date</div></div><div style="margin-top:32px;font:700 12px Georgia;color:#756646">Regilator Tech Industries • Educational Simulation</div></div>
+    <div style="display:flex;justify-content:center;gap:9px;margin-top:16px"><button class="btn" id="editName">Edit name</button><button class="btn primary" id="printCert"><i class="fa-solid fa-print"></i> Print / Save PDF</button></div>
+  </div>
+</section>
+
+<section id="profile" class="view">
+  <div class="eyebrow">ACCOUNT</div><h1 class="title">Profile</h1><p class="subtitle">Personalize the training workspace. This demo stores profile data locally in your browser.</p>
+  <div class="grid g2">
+    <div class="card pad"><div class="section-head" style="margin-top:0"><h3>Student profile</h3></div><div class="form"><div class="field"><label>Full name</label><input id="profileName"></div><div class="field"><label>Learning goal</label><select id="profileGoal"><option>Understand investing basics</option><option>Practice active trading</option><option>Prepare for an assessment</option><option>Build disciplined risk habits</option></select></div><button class="btn primary" id="saveProfile">Save profile</button></div></div>
+    <div class="card pad"><div class="section-head" style="margin-top:0"><h3>Achievements</h3></div><div id="achievementList"></div></div>
+  </div>
+  <div class="card pad" style="margin-top:16px"><div class="section-head" style="margin-top:0"><h3>Application information</h3></div><p style="color:var(--muted);font-size:12px;line-height:1.7">MarketForge is an educational simulation. Prices, companies, order books, performance figures and certificates shown here are simulated. This product is not a brokerage, does not execute real orders and does not provide personalized financial advice.</p></div>
+</section>
+
+<div class="footer">MarketForge Academy • Educational trading simulator • Built for practice, review and disciplined decision-making</div>
+</main>
+</div>
+<div class="watermark">👑 @Lod of tech</div>
+</div>
+
+<div class="modal" id="helpModal"><div class="modal-box"><div class="modal-head"><h3>How MarketForge works</h3><button class="icon-btn close-modal"><i class="fa-solid fa-xmark"></i></button></div><div class="note"><h4>1. Study</h4><p>Complete the Academy modules and mark lessons complete as you understand them.</p></div><div class="note"><h4>2. Practice</h4><p>Use virtual cash in the Simulator. Prices move automatically and the order book is simulated.</p></div><div class="note"><h4>3. Review</h4><p>Keep a journal entry for your decisions. The goal is to improve your process, not chase a simulated score.</p></div><div class="note"><h4>4. Assess</h4><p>Start a randomized exam. Questions and answer choices are shuffled each attempt.</p></div><div class="note"><h4>5. Certificate</h4><p>Complete all 12 modules and achieve at least 800 XP in an exam to unlock the certificate preview.</p></div></div></div>
+<div class="modal" id="loginModal"><div class="modal-box" style="max-width:430px;text-align:center"><div class="brand" style="justify-content:center"><div class="brand-mark"><i class="fa-solid fa-chart-line"></i></div><div class="brand-text"><strong>MarketForge</strong><small>Academy & Simulator</small></div></div><h2 style="font:800 24px Manrope;margin:22px 0 7px">Start your learning session</h2><p style="color:var(--muted);font-size:12px;line-height:1.6">This demo uses local browser storage. No real brokerage account is connected.</p><div class="form" style="text-align:left;margin-top:18px"><div class="field"><label>Your name</label><input id="loginName" placeholder="Enter your name"></div><button class="btn primary" id="loginBtn">Enter MarketForge</button></div></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+class MarketForge {
+  constructor(){
+    this.storeKey="marketforge_v2";
+    let saved=null;
+    try{saved=JSON.parse(localStorage.getItem(this.storeKey)||"null")}catch(e){localStorage.removeItem(this.storeKey)}
+    this.data=saved||{
+      name:"Lod of tech",goal:"Understand investing basics",xp:0,level:1,completed:[],
+      cash:10000,portfolio:{},journal:[],bestScore:0,examPassed:false,theme:"dark",seen:true,lastMarketAt:Date.now(),marketPrices:null
+    };
+    this.selected="RTI";
+    this.market={
+      RTI:{name:"Regilator Tech Industries",price:145.20,base:145.20,vol:.012},
+      OGF:{name:"Optics Glass Fix",price:42.80,base:42.80,vol:.024},
+      TTO:{name:"Titan Tech Omega",price:210.50,base:210.50,vol:.018},
+      AGP:{name:"Alien Galaxy",price:18.75,base:18.75,vol:.035},
+      GLD:{name:"Global Gold Index",price:1950,base:1950,vol:.006},
+      NVA:{name:"Nova Energy Systems",price:76.40,base:76.40,vol:.028}
+    };
+    this.history={}; Object.keys(this.market).forEach(s=>this.history[s]=this.makeHistory(this.market[s].price));
+    this.restoreMarketState();
+    this.questions=this.buildQuestions();
+    this.quiz=null; this.tick=null;
+  }
+  save(){this.data.lastMarketAt=Date.now();this.data.marketPrices=Object.fromEntries(Object.entries(this.market).map(([s,m])=>[s,m.price]));localStorage.setItem(this.storeKey,JSON.stringify(this.data));}
+  restoreMarketState(){
+    const prices=this.data.marketPrices||{};Object.keys(prices).forEach(s=>{if(this.market[s]){this.market[s].price=Number(prices[s])||this.market[s].price;this.history[s]=this.makeHistory(this.market[s].price)}});
+    const last=Number(this.data.lastMarketAt)||Date.now(),elapsed=Math.max(0,Math.min(Date.now()-last,7*24*60*60*1000));
+    const steps=Math.floor(elapsed/2500);
+    if(steps>0){for(let i=0;i<steps;i++)this.simulateMarketStep();}
+    this.data.lastMarketAt=Date.now();this.save();
+  }
+  simulateMarketStep(){Object.keys(this.market).forEach(s=>{const m=this.market[s],move=(Math.random()-.49)*m.vol;m.price=Math.max(.5,m.price*(1+move));this.history[s].push(m.price);if(this.history[s].length>70)this.history[s].shift()})}
+
+  money(n){return Number(n).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
+  makeHistory(price){let a=[];let p=price;for(let i=0;i<55;i++){p*=1+(Math.random()-.49)*.012;a.push(p)}return a}
+  toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(this.toastTimer);this.toastTimer=setTimeout(()=>t.classList.remove("show"),2300)}
+  nav(view){document.querySelectorAll(".view").forEach(x=>x.classList.remove("active"));document.getElementById(view).classList.add("active");document.querySelectorAll(".nav-btn").forEach(x=>x.classList.toggle("active",x.dataset.view===view));this.refresh()}
+  bind(){
+    document.querySelectorAll(".nav-btn").forEach(b=>b.addEventListener("click",()=>this.nav(b.dataset.view)));
+    document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>this.nav(b.dataset.go)));
+    document.getElementById("helpBtn").onclick=()=>document.getElementById("helpModal").classList.add("open");
+    document.querySelectorAll(".close-modal").forEach(b=>b.onclick=()=>b.closest(".modal").classList.remove("open"));
+    document.getElementById("themeBtn").onclick=()=>{document.body.classList.toggle("light");this.toast("Appearance preference updated");};
+    document.getElementById("loginBtn").onclick=()=>this.login();
+    document.getElementById("avatarBtn").onclick=()=>this.nav("profile");
+    document.getElementById("startQuiz").onclick=()=>this.startQuiz();
+    document.getElementById("noteSearch").oninput=()=>this.renderNotes();
+    document.getElementById("saveJournal").onclick=()=>this.saveJournal();
+    document.getElementById("saveProfile").onclick=()=>this.saveProfile();
+    document.getElementById("editName").onclick=()=>{const n=prompt("Name for certificate:",this.data.name);if(n&&n.trim()){this.data.name=n.trim();this.save();this.refresh()}};
+    document.getElementById("printCert").onclick=()=>window.print();
+    document.getElementById("resetSim").onclick=()=>{if(confirm("Reset virtual cash and all simulated positions?")){this.data.cash=10000;this.data.portfolio={};this.save();this.refresh();this.toast("Simulation reset")}};
+    document.getElementById("tradeQty").oninput=()=>this.updateEstimate();
+    document.getElementById("buyBtn").onclick=()=>this.trade("buy");
+    document.getElementById("sellBtn").onclick=()=>this.trade("sell");
+    document.getElementById("globalSearch").oninput=e=>this.globalSearch(e.target.value);
+  }
+  login(){const n=document.getElementById("loginName").value.trim();if(n)this.data.name=n;this.data.seen=true;this.save();document.getElementById("loginModal").classList.remove("open");this.refresh();this.toast("Learning session started");}
+  buildQuestions(){
+    const q=(question,options,answer,explain,difficulty,xp)=>({question,options,answer,explain,difficulty,xp});
+    return [
+      q("What does buying common stock normally represent?","An ownership interest in a company|A guaranteed loan repayment|A fixed deposit|A government bond".split("|"),"An ownership interest in a company","Common shares generally represent an equity claim on a company.","foundation",60),
+      q("What is the bid price?","The highest price a buyer is currently willing to pay|The lowest price a seller will accept|Yesterday's closing price|The company's book value".split("|"),"The highest price a buyer is currently willing to pay","The bid represents demand at a stated price; the ask represents supply.","foundation",60),
+      q("What is the ask price?","The lowest price a seller is currently willing to accept|The highest price a buyer will pay|The daily opening price|The average price over a year".split("|"),"The lowest price a seller is currently willing to accept","The ask is the price at which a seller is offering shares.","foundation",60),
+      q("What does the bid-ask spread measure?","The gap between the best bid and best ask|A company's annual profit margin|The difference between debt and equity|The distance from a stock's high to low over ten years".split("|"),"The gap between the best bid and best ask","A tighter spread is often associated with better liquidity, although liquidity has several dimensions.","foundation",60),
+      q("Why can diversification reduce portfolio risk?","It reduces dependence on the outcome of one asset|It guarantees positive returns|It removes market risk entirely|It makes every asset move together".split("|"),"It reduces dependence on the outcome of one asset","Different assets can respond differently to the same event, reducing concentration risk.","foundation",60),
+      q("What is position sizing?","Choosing how much capital or exposure to allocate to a trade|Predicting tomorrow's closing price|Selecting a brokerage logo|Changing the chart timeframe".split("|"),"Choosing how much capital or exposure to allocate to a trade","Position sizing connects a trade idea to the amount of risk the account can tolerate.","foundation",60),
+      q("What is a stop-loss intended to do?","Exit a position when a predefined adverse condition is reached|Guarantee the best possible exit price|Increase leverage automatically|Predict earnings".split("|"),"Exit a position when a predefined adverse condition is reached","A stop can help define downside, though execution can differ from the trigger price in real markets.","foundation",60),
+      q("What does liquidity describe?","How easily an asset can be traded without materially moving its price|How profitable a company is|How many employees a company has|How old a stock exchange is".split("|"),"How easily an asset can be traded without materially moving its price","Liquidity relates to the ability to transact with limited market impact.","foundation",60),
+      q("A stock falls 20% from a recent peak. Which statement is most accurate?","It meets the common threshold used to describe a bear market when referring to a broad index or market|It must be a bull market|It guarantees bankruptcy|It means the company has stopped trading".split("|"),"It meets the common threshold used to describe a bear market when referring to a broad index or market","The 20% convention is commonly applied to broad market declines; one stock falling 20% is not itself a bear market.","foundation",60),
+      q("What does an index generally do?","Tracks a defined basket or group of securities according to a methodology|Guarantees a return|Eliminates volatility|Sets the price of every stock".split("|"),"Tracks a defined basket or group of securities according to a methodology","Indexes provide a way to measure or gain exposure to a defined market segment.","foundation",60),
+      q("RSI is primarily used as a measure of what?","Momentum|Company debt|Dividend yield|Employee growth".split("|"),"Momentum","RSI is a momentum oscillator commonly scaled from 0 to 100.","foundation",60),
+      q("Why is an RSI above 70 not automatically a sell signal?","Strong momentum can persist and indicators need context|RSI never changes|70 means the company is bankrupt|It guarantees the price will rise".split("|"),"Strong momentum can persist and indicators need context","Overbought readings can persist; technical indicators should be interpreted with price structure and risk controls.","advanced",80),
+      q("What is the purpose of a moving average?","To smooth price data and help identify trend or regime characteristics|To guarantee a future price|To calculate taxes|To determine a company's legal structure".split("|"),"To smooth price data and help identify trend or regime characteristics","Moving averages reduce short-term noise and can help frame trend, support/resistance or regime analysis.","foundation",60),
+      q("What is market impact?","The price movement caused by your own order interacting with available liquidity|A company's marketing budget|The effect of inflation on wages only|A stock split".split("|"),"The price movement caused by your own order interacting with available liquidity","Large orders relative to available liquidity can move the market.","advanced",80),
+      q("Why might a market order have slippage?","The available prices can change while the order is being executed|Market orders always execute at yesterday's close|The exchange guarantees a fixed price|The stock has no buyers".split("|"),"The available prices can change while the order is being executed","A market order prioritizes execution over a guaranteed price, so the fill can differ from the displayed quote.","advanced",80),
+      q("What is the main danger of excessive leverage?","Small price moves can create disproportionately large gains or losses|It eliminates all losses|It guarantees liquidity|It prevents margin calls".split("|"),"Small price moves can create disproportionately large gains or losses","Leverage magnifies exposure relative to capital and therefore magnifies both outcomes.","advanced",80),
+      q("What does correlation describe in portfolio analysis?","How two variables tend to move relative to one another|The exact future return of an asset|The number of shares outstanding|The company's tax rate".split("|"),"How two variables tend to move relative to one another","Correlation is a statistical measure of co-movement; it does not establish causation.","advanced",80),
+      q("If two assets are highly correlated, what diversification benefit might be reduced?","The benefit of holding both because they may react similarly|The ability to calculate market value|The ability to trade either asset|The need for a broker".split("|"),"The benefit of holding both because they may react similarly","Assets that move together can provide less diversification than assets with different return drivers.","advanced",80),
+      q("What is the risk-reward ratio comparing?","Potential loss relative to potential gain in a trade setup|Trading volume to share count|Revenue to employees|Bid to company age".split("|"),"Potential loss relative to potential gain in a trade setup","Traders often compare the amount they plan to risk with the potential reward before entering.","advanced",80),
+      q("Why can backtesting be misleading?","Historical data and assumptions may not represent future conditions or real execution|It always uses live money|It guarantees future returns|It cannot use historical data".split("|"),"Historical data and assumptions may not represent future conditions or real execution","Costs, survivorship bias, look-ahead bias and changing regimes can all make historical results misleading.","advanced",80),
+      q("What is drawdown?","The decline from a portfolio or strategy peak to a subsequent trough|The amount of money deposited|The daily trading fee|The number of shares in a company".split("|"),"The decline from a portfolio or strategy peak to a subsequent trough","Drawdown helps describe how severe a period of losses was relative to a prior peak.","advanced",80),
+      q("Why separate a trading thesis from an invalidation point?","It makes the conditions that would disprove the idea explicit|It guarantees the trade wins|It increases leverage|It avoids recording the trade".split("|"),"It makes the conditions that would disprove the idea explicit","A thesis explains why a setup may work; invalidation defines when the original reasoning no longer holds.","advanced",80),
+      q("What does a limit order generally allow a trader to specify?","A maximum purchase price or minimum sale price|A guaranteed execution regardless of price|A company's dividend policy|A future earnings result".split("|"),"A maximum purchase price or minimum sale price","A limit order prioritizes price control, but execution is not guaranteed.","advanced",80),
+      q("What is concentration risk?","The risk created by having too much exposure to one asset, sector or factor|The risk of using too many charts|The risk of having many small positions|The risk of reading a financial statement".split("|"),"The risk created by having too much exposure to one asset, sector or factor","Concentration can make a portfolio unusually sensitive to one source of risk.","foundation",60),
+      q("Why can earnings announcements create volatility?","New information can change expectations about future cash flows and valuation|Companies stop having shareholders|Exchanges close permanently|All investors receive the same guaranteed return".split("|"),"New information can change expectations about future cash flows and valuation","Prices can react sharply when new information changes expectations.","advanced",80),
+      q("What is a dividend?","A distribution a company chooses to make to shareholders, often from profits or cash flow|A mandatory fee paid by every investor|A type of stock split|A loan from shareholders".split("|"),"A distribution a company chooses to make to shareholders, often from profits or cash flow","Dividends are distributions; they are not guaranteed and policies vary by company.","foundation",60),
+      q("Which statement about past performance is most appropriate?","Past performance does not guarantee future results|Past performance guarantees future returns|Past losses guarantee future gains|Past performance eliminates risk".split("|"),"Past performance does not guarantee future results","Historical results can inform analysis but cannot guarantee what happens next.","foundation",60),
+      q("What is a catalyst in market analysis?","An event or piece of information that may change expectations about an asset|A guaranteed profit|A chart color|A brokerage password".split("|"),"An event or piece of information that may change expectations about an asset","Catalysts can include earnings, product launches, regulation, macro data or other new information.","advanced",80),
+      q("What is the strongest reason to keep a trading journal?","To evaluate decision quality and recurring mistakes over time|To guarantee profitable trades|To predict every market move|To avoid using risk management".split("|"),"To evaluate decision quality and recurring mistakes over time","A journal turns individual trades into feedback that can improve process and discipline.","foundation",60),
+      q("Which is the best description of a simulated market in this application?","A practice environment that models market-like behavior without real execution|A direct connection to a stock exchange|A guaranteed investment account|A bank account".split("|"),"A practice environment that models market-like behavior without real execution","This application is designed for learning and practice; its prices and executions are simulated.","foundation",60)
+    ];
+  }
+  lessons(){
+    return [
+      ["01","Market Basics","Shares, ownership and how exchanges connect buyers and sellers.","Foundation"],
+      ["02","Bid, Ask & Spread","Read quotes, understand spreads and learn why the displayed price is not the whole market.","Foundation"],
+      ["03","Order Types","Market, limit and stop orders: what each tries to prioritize and what it cannot guarantee.","Foundation"],
+      ["04","Liquidity & Slippage","See how available liquidity can affect fills and why large orders can move price.","Intermediate"],
+      ["05","Risk Management","Position sizing, invalidation, stop placement and protecting the account from one bad idea.","Core Skill"],
+      ["06","Technical Analysis","Price structure, trend, support/resistance, moving averages and momentum tools.","Intermediate"],
+      ["07","RSI & Momentum","Understand what RSI measures, common interpretations and why context matters.","Intermediate"],
+      ["08","Fundamentals","Revenue, earnings, cash flow, valuation and why expectations can matter as much as results.","Intermediate"],
+      ["09","Indices & Diversification","Learn index construction, correlation, concentration and portfolio-level thinking.","Core Skill"],
+      ["10","Market Cycles","Bull and bear environments, volatility regimes and adapting without predicting perfectly.","Advanced"],
+      ["11","Trading Psychology","FOMO, revenge trading, overconfidence and building rules that reduce emotional decisions.","Advanced"],
+      ["12","Building a Trading Plan","Combine thesis, trigger, invalidation, size, execution and review into one repeatable process.","Capstone"]
+    ];
+  }
+  renderLessons(){
+    const box=document.getElementById("lessonGrid");box.innerHTML="";
+    this.lessons().forEach((l,i)=>{
+      const done=this.data.completed.includes(i);
+      const el=document.createElement("div");el.className="card lesson";
+      el.innerHTML=`<div class="lesson-num">Module ${l[0]} • ${l[3]}</div><h4>${l[1]}</h4><p>${l[2]}</p><div class="lesson-footer"><span>${done?"Completed":"Ready to study"}</span><button class="btn small ${done?"":"primary"}">${done?"Review":"Study module"}</button></div>`;
+      el.querySelector("button").onclick=()=>this.openLesson(i);box.appendChild(el);
+    });
+  }
+  openLesson(i){
+    const l=this.lessons()[i];
+    const modal=document.createElement("div");modal.className="modal open";
+    const content=document.createElement("div");content.className="modal-box";
+    const details=[
+      ["Key idea",l[2]],
+      ["Why it matters","Good market decisions start with a clear definition of the problem. Avoid treating one indicator or one price move as a complete explanation."],
+      ["Practice prompt","Write one sentence explaining how you would use this concept before placing a simulated trade."],
+      ["Reality check","Markets contain uncertainty. No lesson, indicator or pattern guarantees a result."]
+    ];
+    content.innerHTML=`<div class="modal-head"><h3>Module ${l[0]} — ${l[1]}</h3><button class="icon-btn close"><i class="fa-solid fa-xmark"></i></button></div>`;
+    details.forEach(d=>content.innerHTML+=`<div class="note" style="background:#0d1421;border-radius:11px;margin:8px 0"><h4>${d[0]}</h4><p>${d[1]}</p></div>`);
+    const btn=document.createElement("button");btn.className="btn primary";btn.textContent=this.data.completed.includes(i)?"Module completed":"Mark module complete";btn.style.marginTop="10px";
+    btn.onclick=()=>{if(!this.data.completed.includes(i)){this.data.completed.push(i);this.data.xp+=50;this.levelCheck();this.save();this.toast("+50 XP • Module completed")}modal.remove();this.refresh()};
+    content.appendChild(btn);modal.appendChild(content);document.body.appendChild(modal);content.querySelector(".close").onclick=()=>modal.remove();
+  }
+  renderNotes(filter=""){
+    const notes=[
+      ["Market Structure","The bid is the highest displayed buying interest and the ask is the lowest displayed selling interest. The difference is the spread.","Quotes"],
+      ["Liquidity","Liquidity is about how much can be traded with limited price impact. A liquid asset can still move sharply when new information arrives.","Execution"],
+      ["Slippage","A displayed quote is not a promise of the final fill. Fast markets and thin liquidity can produce a different execution price.","Execution"],
+      ["Position Size","A good setup can still be a bad trade if the position is too large. Size should reflect both account capital and the distance to invalidation.","Risk"],
+      ["Stop & Invalidation","A stop is an execution tool; invalidation is a reasoning tool. Know what would make the original thesis wrong before entering.","Risk"],
+      ["Diversification","Owning more assets does not automatically mean better diversification. If holdings share the same risk driver, concentration can remain high.","Portfolio"],
+      ["RSI","RSI measures momentum. Traditional 70/30 levels are context signals, not automatic buy or sell commands.","Technical"],
+      ["Moving Averages","Moving averages smooth price data. They can help frame trend but lag because they are calculated from past prices.","Technical"],
+      ["Earnings","A company can report strong results and still fall if the market expected even better results. Price reflects expectations, not just headlines.","Fundamental"],
+      ["Valuation","Valuation asks what investors are paying relative to a company's expected financial performance. Different methods fit different businesses.","Fundamental"],
+      ["Drawdown","Drawdown measures decline from a prior peak. A strategy's maximum drawdown can be more informative than its best single trade.","Risk"],
+      ["Trading Psychology","FOMO, revenge trading and overconfidence can turn a reasonable strategy into inconsistent behavior. Rules are useful when emotions are loud.","Psychology"],
+      ["Limit Orders","A limit order gives price control but does not guarantee execution. A market order prioritizes execution but can have slippage.","Execution"],
+      ["Market Orders","Market orders are useful when execution matters more than exact price. In volatile or thin markets, the final fill can differ from the quote.","Execution"],
+      ["Correlation","Correlation describes co-movement. Two assets can be highly correlated for a period and behave differently later.","Portfolio"],
+      ["Catalysts","A catalyst is new information that can change expectations. The same event can affect different companies in different ways.","Fundamental"]
+    ];
+    const box=document.getElementById("notesGrid");box.innerHTML="";
+    notes.filter(n=>(n[0]+" "+n[1]+" "+n[2]).toLowerCase().includes(filter.toLowerCase())).forEach(n=>{
+      const el=document.createElement("div");el.className="card note";el.innerHTML=`<h4>${n[0]}</h4><p>${n[1]}</p><span class="tag">${n[2]}</span>`;box.appendChild(el);
+    });
+  }
+  marketTick(){this.simulateMarketStep();this.data.lastMarketAt=Date.now();this.save();this.refreshMarketOnly()}
+  refreshMarketOnly(){
+    this.renderWatch();this.renderMarkets();this.renderSimulator();this.drawCharts();
+  }
+  renderWatch(){
+    const html=Object.entries(this.market).slice(0,5).map(([s,m])=>{
+      const ch=((m.price/m.base)-1)*100;return `<div class="market-row"><div><div class="symbol">${s}</div><div class="company">${m.name}</div></div><div class="price">$${this.money(m.price)}</div><div class="change ${ch>=0?"up":"down"}">${ch>=0?"+":""}${ch.toFixed(2)}%</div><canvas class="spark" data-spark="${s}"></canvas></div>`
+    }).join("");
+    document.getElementById("dashboardWatch").innerHTML=html;
+    document.querySelectorAll("[data-spark]").forEach(c=>this.spark(c,this.history[c.dataset.spark]));
+  }
+  renderMarkets(){
+    const stats=Object.entries(this.market).slice(0,4).map(([s,m])=>{const ch=(m.price/m.base-1)*100;return `<div class="card stat"><div class="stat-top"><span>${s}</span><span class="badge">${m.name.split(" ")[0]}</span></div><div class="stat-value">$${this.money(m.price)}</div><div class="stat-note ${ch>=0?"up":"down"}">${ch>=0?"+":""}${ch.toFixed(2)}% simulated session</div></div>`}).join("");
+    document.getElementById("marketStats").innerHTML=stats;
+    document.getElementById("fullMarket").innerHTML=Object.entries(this.market).map(([s,m])=>{
+      const ch=(m.price/m.base-1)*100;return `<div class="market-row" style="cursor:pointer" data-market="${s}"><div><div class="symbol">${s}</div><div class="company">${m.name}</div></div><div class="price">$${this.money(m.price)}</div><div class="change ${ch>=0?"up":"down"}">${ch>=0?"+":""}${ch.toFixed(2)}%</div><div class="change">${(m.vol*100).toFixed(1)}% vol</div></div>`
+    }).join("");
+    document.querySelectorAll("[data-market]").forEach(x=>x.onclick=()=>{this.selected=x.dataset.market;this.nav("simulator")});
+  }
+  renderSimulator(){
+    const list=Object.entries(this.market).map(([s,m])=>`<div class="market-row" style="grid-template-columns:1fr auto;cursor:pointer;padding:10px 0" data-sim="${s}"><div><div class="symbol">${s}</div><div class="company">${m.name}</div></div><div class="price">$${this.money(m.price)}</div></div>`).join("");
+    document.getElementById("simWatch").innerHTML=list;
+    document.querySelectorAll("[data-sim]").forEach(x=>x.onclick=()=>{this.selected=x.dataset.sim;this.refresh()});
+    const m=this.market[this.selected];document.getElementById("selectedSym").textContent=this.selected;document.getElementById("selectedPrice").textContent="$"+this.money(m.price);document.getElementById("selectedName").textContent=m.name;document.getElementById("bookSymbol").textContent=this.selected;
+    const qty=Number(document.getElementById("tradeQty").value)||1;document.getElementById("estimatedCost").textContent="$"+this.money(m.price*qty);
+    this.renderBook(m);this.renderPositions();
+  }
+  renderBook(m){
+    const levels=[1,2,3,4,5].map(i=>{const spread=m.price*(.0006+i*.0003);const bid=m.price-spread,ask=m.price+spread;return `<div class="book-row"><span class="buy-side">$${bid.toFixed(2)}</span><span>${Math.floor(20+Math.random()*150)}</span><span class="sell-side">$${ask.toFixed(2)}</span></div>`}).join("");
+    document.getElementById("orderBook").innerHTML=levels;
+  }
+  updateEstimate(){const m=this.market[this.selected],q=Number(document.getElementById("tradeQty").value)||0;document.getElementById("estimatedCost").textContent="$"+this.money(m.price*q)}
+  trade(side){
+    const qty=Math.floor(Number(document.getElementById("tradeQty").value));if(!qty||qty<1)return this.toast("Enter a valid whole-number quantity.");
+    const sym=this.selected,m=this.market[sym];
+    if(side==="buy"){
+      const cost=m.price*qty;if(this.data.cash<cost)return this.toast("Not enough virtual cash.");
+      const p=this.data.portfolio[sym]||{shares:0,avg:0};p.avg=(p.avg*p.shares+cost)/(p.shares+qty);p.shares+=qty;this.data.portfolio[sym]=p;this.data.cash-=cost;
+    }else{
+      const p=this.data.portfolio[sym];if(!p||p.shares<qty)return this.toast("You do not own enough simulated shares.");
+      this.data.cash+=m.price*qty;p.shares-=qty;if(!p.shares)delete this.data.portfolio[sym];
+    }
+    this.save();this.refresh();this.toast(`${side==="buy"?"Bought":"Sold"} ${qty} ${sym} in simulation`);
+  }
+  renderPositions(){
+    let value=0,count=0,rows="";
+    Object.entries(this.data.portfolio).forEach(([s,p])=>{const price=this.market[s].price,v=p.shares*price,pl=(price-p.avg)*p.shares;value+=v;count++;rows+=`<tr><td><b>${s}</b><div style="font-size:10px;color:var(--muted)">${this.market[s].name}</div></td><td>${p.shares}</td><td>$${this.money(p.avg)}</td><td>$${this.money(price)}</td><td>$${this.money(v)}</td><td class="${pl>=0?"up":"down"}">${pl>=0?"+":""}$${this.money(pl)}</td></tr>`});
+    if(!rows)rows='<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:25px">No open positions. Select an asset above to begin.</td></tr>';
+    document.getElementById("positionsBody").innerHTML=rows;
+    document.getElementById("simCash").textContent=this.money(this.data.cash);document.getElementById("simPort").textContent=this.money(value);document.getElementById("simNet").textContent=this.money(this.data.cash+value);document.getElementById("simPositions").textContent=count;
+    document.getElementById("dashCash").textContent=this.money(this.data.cash);document.getElementById("dashPortfolio").textContent=this.money(value);
+    let totalPL=0;Object.entries(this.data.portfolio).forEach(([s,p])=>totalPL+=(this.market[s].price-p.avg)*p.shares);
+    document.getElementById("dashPL").textContent=count?`${totalPL>=0?"+":""}$${this.money(totalPL)} unrealized P/L`:"No open positions";
+    document.getElementById("dashPL").className="stat-note "+(totalPL>=0?"up":"down");
+  }
+  drawCharts(){
+    this.lineChart(document.getElementById("dashboardChart"),this.history.RTI.concat(this.history.GLD).map((x,i)=>i<this.history.RTI.length?x:this.history.RTI[this.history.RTI.length-1]*(x/1950)),true);
+    this.lineChart(document.getElementById("tradeChart"),this.history[this.selected],false);
+  }
+  lineChart(canvas,data,area){
+    if(!canvas)return;const r=canvas.getBoundingClientRect(),dpr=devicePixelRatio||1,w=Math.max(100,r.width),h=Math.max(100,r.height);canvas.width=w*dpr;canvas.height=h*dpr;const c=canvas.getContext("2d");c.scale(dpr,dpr);c.clearRect(0,0,w,h);
+    c.strokeStyle="rgba(255,255,255,.055)";c.lineWidth=1;for(let i=1;i<5;i++){let y=i*h/5;c.beginPath();c.moveTo(0,y);c.lineTo(w,y);c.stroke()}
+    const min=Math.min(...data),max=Math.max(...data),range=max-min||1;c.beginPath();data.forEach((v,i)=>{const x=i/(data.length-1)*w,y=h-((v-min)/range)*(h-20)-10;i?c.lineTo(x,y):c.moveTo(x,y)});c.strokeStyle="#8b5cf6";c.lineWidth=2;c.stroke();
+    if(area){c.lineTo(w,h);c.lineTo(0,h);c.closePath();const g=c.createLinearGradient(0,0,0,h);g.addColorStop(0,"rgba(139,92,246,.18)");g.addColorStop(1,"rgba(139,92,246,0)");c.fillStyle=g;c.fill()}
+  }
+  spark(canvas,data){const r=canvas.getBoundingClientRect(),w=Math.max(40,r.width),h=32,dpr=devicePixelRatio||1;canvas.width=w*dpr;canvas.height=h*dpr;const c=canvas.getContext("2d");c.scale(dpr,dpr);const min=Math.min(...data),max=Math.max(...data),range=max-min||1;c.beginPath();data.forEach((v,i)=>{const x=i/(data.length-1)*w,y=h-((v-min)/range)*(h-5)-2;i?c.lineTo(x,y):c.moveTo(x,y)});c.strokeStyle=data[data.length-1]>=data[0]?"#32d583":"#ff647c";c.lineWidth=1.5;c.stroke()}
+  startQuiz(){
+    const len=Number(document.getElementById("quizLength").value),diff=document.getElementById("quizDifficulty").value;
+    let pool=[...this.questions];if(diff==="foundation")pool.sort((a,b)=>(a.difficulty==="foundation"?0:1)-(b.difficulty==="foundation"?0:1));if(diff==="advanced")pool.sort((a,b)=>(a.difficulty==="advanced"?0:1)-(b.difficulty==="advanced"?0:1));
+    pool.sort(()=>Math.random()-.5);this.quiz={questions:pool.slice(0,len),index:0,score:0,locked:false};document.getElementById("quizPanel").classList.remove("hidden");this.renderQuiz();
+  }
+  renderQuiz(){
+    const p=this.quiz;if(p.index>=p.questions.length)return this.finishQuiz();
+    const q=p.questions[p.index],pct=p.index/p.questions.length*100;
+    document.getElementById("quizProgressBar").style.width=pct+"%";
+    const panel=document.getElementById("quizPanel");panel.innerHTML=`<div class="quiz-top"><span>Question ${p.index+1} of ${p.questions.length}</span><b>${p.score} XP</b></div><div class="quiz-question"><div class="question-number">${q.difficulty.toUpperCase()} • ${q.xp} XP</div><h2>${q.question}</h2><div id="opts"></div><div class="feedback" id="quizFeedback"></div></div>`;
+    const opts=[...q.options].sort(()=>Math.random()-.5);opts.forEach(o=>{const b=document.createElement("button");b.className="option";b.textContent=o;b.onclick=()=>this.answerQuiz(b,o);document.getElementById("opts").appendChild(b)});
+  }
+  answerQuiz(btn,selected){
+    if(this.quiz.locked)return;this.quiz.locked=true;const q=this.quiz.questions[this.quiz.index],correct=selected===q.answer;document.querySelectorAll("#opts .option").forEach(b=>{b.disabled=true;if(b.textContent===q.answer)b.classList.add("correct")});if(!correct)btn.classList.add("wrong");
+    if(correct){this.quiz.score+=q.xp;document.getElementById("quizFeedback").innerHTML=`<span class="up"><i class="fa-solid fa-check"></i> Correct. +${q.xp} XP</span> — ${q.explain}`}
+    else document.getElementById("quizFeedback").innerHTML=`<span class="down"><i class="fa-solid fa-xmark"></i> Not quite.</span> Correct answer: ${q.answer}. ${q.explain}`;
+    setTimeout(()=>{this.quiz.index++;this.quiz.locked=false;this.renderQuiz()},1600);
+  }
+  finishQuiz(){
+    const score=this.quiz.score;this.data.xp+=score;this.data.bestScore=Math.max(this.data.bestScore,score);if(score>=800)this.data.examPassed=true;this.levelCheck();this.save();
+    document.getElementById("quizProgressBar").style.width="100%";document.getElementById("quizPanel").innerHTML=`<div class="quiz-question" style="text-align:center"><i class="fa-solid ${score>=800?"fa-trophy":"fa-rotate-right"}" style="font-size:40px;color:${score>=800?"var(--gold)":"var(--muted)"}"></i><h2>${score>=800?"Assessment passed":"Assessment complete"}</h2><p style="color:var(--muted);font-size:13px">You scored <b style="color:#fff">${score} XP</b>. ${score>=800?"Your certificate requirement is now satisfied for the exam.":"You need 800 XP for the exam requirement. Review your weak areas and try again."}</p><button class="btn primary" onclick="window.app.startQuiz()">Take another randomized exam</button></div>`;
+    this.refresh();this.toast(score>=800?"Exam passed • Certificate unlocked":"Exam recorded");
+  }
+  levelCheck(){this.data.level=Math.max(1,Math.floor(this.data.xp/500)+1)}
+  saveJournal(){
+    const entry={date:new Date().toLocaleString(),asset:document.getElementById("journalAsset").value,direction:document.getElementById("journalDirection").value,idea:document.getElementById("journalEntry").value.trim(),stop:document.getElementById("journalStop").value.trim(),reason:document.getElementById("journalReason").value.trim()};
+    if(!entry.reason&&!entry.idea)return this.toast("Add some reasoning before saving.");
+    this.data.journal.unshift(entry);this.data.journal=this.data.journal.slice(0,50);this.data.xp+=15;this.levelCheck();this.save();["journalEntry","journalStop","journalReason"].forEach(id=>document.getElementById(id).value="");this.refresh();this.toast("+15 XP • Journal entry saved");
+  }
+  renderJournal(){
+    document.getElementById("journalCount").textContent=this.data.journal.length+" entries";
+    const box=document.getElementById("journalList");box.innerHTML=this.data.journal.map((j,i)=>`<div class="card note"><div style="display:flex;justify-content:space-between"><span class="badge">${j.asset} • ${j.direction}</span><span style="font-size:9px;color:var(--muted)">${j.date}</span></div><h4 style="margin-top:12px">${j.idea||"Practice note"}</h4><p><b>Invalidation:</b> ${j.stop||"Not specified"}<br><br>${j.reason||""}</p><button class="btn small danger" style="margin-top:12px" onclick="window.app.deleteJournal(${i})">Delete</button></div>`).join("")||`<div class="card pad" style="grid-column:1/-1;text-align:center;color:var(--muted)">No journal entries yet.</div>`;
+  }
+  deleteJournal(i){this.data.journal.splice(i,1);this.save();this.refresh();this.toast("Journal entry removed")}
+  saveProfile(){const n=document.getElementById("profileName").value.trim();if(n)this.data.name=n;this.data.goal=document.getElementById("profileGoal").value;this.save();this.refresh();this.toast("Profile saved")}
+  renderAchievements(){
+    const items=[
+      ["First Steps","Complete your first Academy module.",this.data.completed.length>=1],
+      ["Study Streak","Complete 6 Academy modules.",this.data.completed.length>=6],
+      ["Course Finisher","Complete all 12 Academy modules.",this.data.completed.length>=12],
+      ["Paper Trader","Open your first simulated position.",Object.keys(this.data.portfolio).length>0],
+      ["Journalist","Save 5 journal entries.",this.data.journal.length>=5],
+      ["Exam Ready","Score at least 800 XP in an exam.",this.data.examPassed]
+    ];
+    document.getElementById("achievementList").innerHTML=items.map(x=>`<div class="achievement"><div class="achievement-icon"><i class="fa-solid ${x[2]?"fa-check":"fa-lock"}"></i></div><div><h4>${x[0]}</h4><p>${x[1]}</p></div></div>`).join("");
+  }
+  renderCertificate(){
+    const unlocked=this.data.completed.length>=12&&this.data.examPassed;document.getElementById("certLocked").classList.toggle("hidden",unlocked);document.getElementById("certUnlocked").classList.toggle("hidden",!unlocked);
+    document.getElementById("certName").textContent=this.data.name;document.getElementById("certXP").textContent=this.data.bestScore+" XP";document.getElementById("certDate").textContent=new Date().getFullYear();
+  }
+  globalSearch(v){
+    if(!v.trim())return;const x=v.toLowerCase();if(this.lessons().some(l=>l[1].toLowerCase().includes(x)))this.nav("academy");else if(this.questions.some(q=>q.question.toLowerCase().includes(x)))this.nav("quiz");else{this.nav("notes");document.getElementById("noteSearch").value=v;this.renderNotes(v)}
+  }
+  refresh(){
+    document.getElementById("helloName").textContent=this.data.name.split(" ")[0]||"Trader";document.getElementById("dashXP").textContent=this.data.xp;document.getElementById("dashLevel").textContent=this.data.level;
+    const pct=Math.round(this.data.completed.length/12*100);["dashProgress","academyPct"].forEach(id=>document.getElementById(id).textContent=pct);document.getElementById("sideProgressText").textContent=pct+"%";document.getElementById("sideProgress").style.width=pct+"%";document.getElementById("academyProgress").style.width=pct+"%";
+    document.getElementById("quizXP").textContent=this.data.xp;document.getElementById("quizLevel").textContent=this.data.level;document.getElementById("bestScore").textContent=this.data.bestScore+" XP";
+    document.getElementById("profileName").value=this.data.name;document.getElementById("profileGoal").value=this.data.goal;
+    document.getElementById("journalAsset").innerHTML=Object.keys(this.market).map(s=>`<option>${s}</option>`).join("");
+    this.renderLessons();this.renderNotes(document.getElementById("noteSearch").value);this.renderJournal();this.renderAchievements();this.renderCertificate();this.renderWatch();this.renderMarkets();this.renderSimulator();this.drawCharts();
+  }
+  init(){
+    this.bind();this.refresh();this.nav("dashboard");this.tick=setInterval(()=>this.marketTick(),2500);
+    // Never leave a startup overlay covering the application.
+    const splash=document.getElementById("splashScreen");
+    window.setTimeout(()=>splash&&splash.classList.add("hide"),900);
+    window.addEventListener("resize",()=>this.drawCharts());
+    document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")this.save();else{this.restoreMarketState();this.refresh()}});
+    window.addEventListener("pagehide",()=>this.save());
+  }
+}
+window.app=new MarketForge();
+window.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelectorAll(".modal.open").forEach(m=>m.classList.remove("open"))});
+window.addEventListener("DOMContentLoaded",()=>{window.app.init()});
+
+</script>
+</body>
+</html>

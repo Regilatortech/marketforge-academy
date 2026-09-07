@@ -367,7 +367,10 @@ class MarketForge {
     this.account=null;this.data=null;this.showAuth("signin");
   }
   restoreMarketState(){
-    const prices=this.data.marketPrices||{};
+    // No account exists on first launch, so there is no user data to restore.
+    // The old version tried to read this.data.lastMarketAt while this.data was null.
+    if(!this.data)return;
+    const prices=(this.data&&this.data.marketPrices)||{};
     Object.keys(prices).forEach(s=>{
       if(!this.market[s])return;
       const saved=Number(prices[s]);
@@ -663,21 +666,29 @@ class MarketForge {
     this.renderLessons();this.renderNotes(document.getElementById("noteSearch").value);this.renderJournal();this.renderAchievements();this.renderCertificate();this.renderWatch();this.renderMarkets();this.renderSimulator();this.drawCharts();
   }
   init(){
+    // Always dismiss the startup splash first. Previously, new users were
+    // returned to the sign-in screen before this code could hide the splash,
+    // leaving the page permanently stuck on “Loading”.
+    const splash=document.getElementById("splashScreen");
+    if(splash){splash.classList.add("hide");window.setTimeout(()=>splash.remove(),500);}
     this.bind();
     if(!this.account){this.showAuth("signin");return;}
     this.refresh();this.nav("dashboard");this.tick=setInterval(()=>this.marketTick(),2500);
-    // Never leave a startup overlay covering the application.
-    const splash=document.getElementById("splashScreen");
-    window.setTimeout(()=>splash&&splash.classList.add("hide"),900);
     window.addEventListener("resize",()=>this.drawCharts());
     document.addEventListener("visibilitychange",()=>{if(!this.account)return;if(document.visibilityState==="hidden")this.save();else{this.restoreMarketState();this.refresh()}});
     window.addEventListener("pagehide",()=>{if(this.account)this.save()});
   }
 }
+window.addEventListener("error",e=>{
+  const splash=document.getElementById("splashScreen");
+  if(splash)splash.classList.add("hide");
+  const err=document.getElementById("authError");
+  if(err && !window.app?.account)err.textContent="MarketForge could not start. Please refresh the page.";
+});
 window.app=new MarketForge();
 window.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelectorAll(".modal.open").forEach(m=>m.classList.remove("open"))});
 window.addEventListener("DOMContentLoaded",()=>{window.app.init()});
 
 </script>
 </body>
-</html>
+    </html>

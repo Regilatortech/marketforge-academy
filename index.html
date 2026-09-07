@@ -62,7 +62,13 @@ a{color:inherit}
 .cert{background:#f7f3e8;color:#252525;padding:44px;border:9px double #c99b3b;position:relative;text-align:center;max-width:800px;margin:auto;box-shadow:0 20px 50px rgba(0,0,0,.3)}.cert:before{content:"";position:absolute;inset:14px;border:1px solid #d8bd78;pointer-events:none}.cert-kicker{letter-spacing:3px;font-size:11px;color:#756646}.cert h1{font:800 37px Georgia,serif;margin:17px 0 10px}.cert-name{font:700 29px Georgia,serif;color:#a27623;border-bottom:1px solid #c99b3b;display:inline-block;padding:8px 28px}.cert p{font:italic 13px Georgia;line-height:1.7;color:#5d574c}.cert-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:28px;font-size:11px}.cert-grid strong{display:block;font-size:14px;margin-bottom:4px}
 .modal{position:fixed;inset:0;background:rgba(2,5,10,.82);backdrop-filter:blur(9px);display:flex;align-items:center;justify-content:center;padding:18px;z-index:100;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .2s ease,visibility .2s ease}.modal.open{visibility:visible;opacity:1;pointer-events:auto}.modal-box{position:relative;z-index:1;width:min(850px,100%);max-height:90vh;overflow:auto;background:#101725;border:1px solid var(--line);border-radius:17px;box-shadow:0 30px 100px rgba(0,0,0,.55);padding:20px}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.modal-head h3{margin:0;font:700 18px Manrope}
 .toast{position:fixed;right:20px;bottom:20px;background:#151f30;border:1px solid var(--line);padding:12px 15px;border-radius:10px;box-shadow:var(--shadow);z-index:200;font-size:12px;transform:translateY(20px);opacity:0;pointer-events:none;transition:.25s}.toast.show{transform:none;opacity:1}
-.footer{color:#59657a;font-size:10px;text-align:center;padding:30px 0 8px}.watermark{position:fixed;right:14px;bottom:10px;font-size:10px;color:#6d5d91;z-index:80;pointer-events:none}
+.footer{color:#59657a;font-size:10px;text-align:center;padding:30px 0 8px}
+.mode-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 0 16px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:rgba(12,18,30,.72)}
+.mode-left{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.mode-status{font-size:11px;color:var(--muted)}
+.mode-dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:#8995a9;box-shadow:0 0 0 3px rgba(137,149,169,.12)}
+.mode-dot.online{background:#2dd4bf;box-shadow:0 0 0 3px rgba(45,212,191,.12)}.mode-dot.offline{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.12)}
+.mode-buttons{display:flex;gap:5px}.mode-btn{border:1px solid var(--line);background:#0d1421;color:#8995a9;border-radius:8px;padding:7px 10px;font:700 10px Manrope;cursor:pointer}.mode-btn.active{color:#fff;border-color:#6553a7;background:rgba(139,92,246,.14)}
+.watermark{position:fixed;right:14px;bottom:10px;font-size:10px;color:#6d5d91;z-index:80;pointer-events:none}
 /* Startup splash: visible briefly, then completely removed from interaction. */
 .splash-screen{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 35%,rgba(139,92,246,.22),transparent 35%),#070a11;opacity:1;visibility:visible;pointer-events:auto;transition:opacity .35s ease,visibility .35s ease}.splash-screen.hide{opacity:0;visibility:hidden;pointer-events:none}.splash-inner{text-align:center;padding:28px}.splash-mark{width:72px;height:72px;margin:0 auto 16px;border-radius:20px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),#4f46e5);box-shadow:0 14px 40px rgba(139,92,246,.35);font-size:30px}.splash-title{font:800 25px Manrope;color:var(--text)}.splash-sub{margin-top:7px;color:var(--muted);font-size:12px}.splash-loader{width:150px;height:3px;margin:20px auto 0;background:#1b2435;border-radius:99px;overflow:hidden}.splash-loader span{display:block;width:45%;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));animation:splashLoad 1.05s ease-in-out infinite}@keyframes splashLoad{0%{transform:translateX(-100%)}100%{transform:translateX(340%)}}
 @media(max-width:1100px){.g4{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:72px 1fr}.brand{min-width:auto}.brand-text,.nav-label,.nav-btn span,.side-card{display:none}.nav-btn{justify-content:center}.sidebar{padding:16px 8px}.main{padding:20px}.order-grid{grid-template-columns:1fr 1fr}.order-grid>.card:nth-child(2){grid-column:1/-1}}
@@ -191,6 +197,7 @@ a{color:inherit}
 
 <section id="markets" class="view">
   <div class="eyebrow">SIMULATED MARKET</div><h1 class="title">Markets</h1><p class="subtitle">Explore prices, liquidity and simulated order-book conditions. Quotes are fictional and for education only.</p>
+  <div class="mode-bar"><div class="mode-left"><span id="modeDot" class="mode-dot"></span><div><b id="modeTitle">Automatic simulation</b><div class="mode-status" id="modeStatus">Checking connection…</div></div></div><div class="mode-buttons"><button class="mode-btn" id="modeAuto">AUTO</button><button class="mode-btn" id="modeOnline">ONLINE</button><button class="mode-btn" id="modeOffline">OFFLINE</button></div></div>
   <div class="grid g4" id="marketStats"></div>
   <div class="card" style="margin-top:16px"><div class="section-head" style="padding:17px 17px 0"><h3>Market Watch</h3><span>Updates every 2.5 seconds</span></div><div id="fullMarket"></div></div>
 </section>
@@ -216,7 +223,7 @@ a{color:inherit}
         </div>
       </div>
     </div>
-    <div class="card pad"><div class="section-head" style="margin-top:0"><h3>Order Book</h3><span id="bookSymbol">RTI</span></div><div class="book-row book-head"><span>Bid</span><span>Size</span><span>Ask</span></div><div id="orderBook"></div><div style="border-top:1px solid var(--line);margin-top:9px;padding-top:10px;font-size:10px;color:var(--muted)">This order book is generated for simulation practice.</div></div>
+    <div class="card pad"><div class="section-head" style="margin-top:0"><h3>Order Book</h3><span id="bookSymbol">RTI</span></div><div class="book-row book-head"><span>Bid</span><span>Size</span><span>Ask</span></div><div id="orderBook"></div><div style="border-top:1px solid var(--line);margin-top:9px;padding-top:10px;font-size:10px;color:var(--muted)">This order book is generated for simulation practice. Online mode uses the internet connection only to verify connectivity; prices remain fictional. Offline mode continues from saved time when you return after closing the app.</div></div>
   </div>
   <div class="card" style="margin-top:16px"><div class="section-head" style="padding:17px 17px 0"><h3>Open Positions</h3><button class="btn small" id="resetSim">Reset Simulation</button></div><div class="table-wrap" style="padding:0 17px 10px"><table class="table"><thead><tr><th>Asset</th><th>Shares</th><th>Avg Cost</th><th>Current</th><th>Market Value</th><th>P/L</th></tr></thead><tbody id="positionsBody"></tbody></table></div></div>
 </section>
@@ -298,7 +305,7 @@ class MarketForge {
     this.sessionKey="marketforge_session_v1";
     this.storeKey="marketforge_v2";
     this.mode="signin"; this.account=null; this.data=null;
-    this.defaultData=()=>({name:"Trader",goal:"Understand investing basics",xp:0,level:1,completed:[],cash:10000,portfolio:{},journal:[],bestScore:0,examPassed:false,theme:"dark",seen:true,lastMarketAt:Date.now(),marketPrices:null});
+    this.defaultData=()=>({name:"Trader",goal:"Understand investing basics",xp:0,level:1,completed:[],cash:10000,portfolio:{},journal:[],bestScore:0,examPassed:false,theme:"dark",seen:true,lastMarketAt:Date.now(),marketPrices:null,marketMode:"auto"});
     this.loadSession();
     this.selected="RTI";
     this.market={
@@ -312,7 +319,7 @@ class MarketForge {
     this.history={}; Object.keys(this.market).forEach(s=>this.history[s]=this.makeHistory(this.market[s].price));
     this.restoreMarketState();
     this.questions=this.buildQuestions();
-    this.quiz=null; this.tick=null;
+    this.quiz=null; this.tick=null; this.onlineTimer=null; this.connectionOnline=navigator.onLine!==false; this.lastHeartbeat=0;
   }
   save(){
     if(!this.data||!this.account)return;
@@ -367,16 +374,17 @@ class MarketForge {
     this.account=null;this.data=null;this.showAuth("signin");
   }
   restoreMarketState(){
-    // No account exists on first launch, so there is no user data to restore.
-    // The old version tried to read this.data.lastMarketAt while this.data was null.
+    // This simulator cannot execute JavaScript while a normal web page is
+    // completely closed. Instead, we persist the last market timestamp and
+    // replay the elapsed simulated trading time immediately when the user
+    // returns. That makes prices/positions continue evolving across closes.
     if(!this.data)return;
-    const prices=(this.data&&this.data.marketPrices)||{};
+
+    const prices=this.data.marketPrices||{};
     Object.keys(prices).forEach(s=>{
       if(!this.market[s])return;
       const saved=Number(prices[s]);
       const base=this.market[s].base;
-      // Protect the demo from old/localStorage values that may have exploded
-      // after a long period away from the page. Keep simulated prices realistic.
       if(Number.isFinite(saved) && saved>=base*0.50 && saved<=base*1.50){
         this.market[s].price=saved;
       }else{
@@ -385,30 +393,99 @@ class MarketForge {
       this.history[s]=this.makeHistory(this.market[s].price);
     });
 
-    const last=Number(this.data.lastMarketAt)||Date.now();
-    const elapsed=Math.max(0,Date.now()-last);
-    // Do not replay days of 2.5-second ticks. Instead, apply only a small
-    // bounded catch-up movement when the user returns to the app.
-    const missed=Math.min(12,Math.floor(elapsed/2500));
-    for(let i=0;i<missed;i++)this.simulateMarketStep();
-
-    this.data.lastMarketAt=Date.now();
+    const now=Date.now();
+    const last=Number(this.data.lastMarketAt)||now;
+    const elapsed=Math.max(0,now-last);
+    this.simulateOfflineTime(elapsed);
+    this.data.lastMarketAt=now;
+    this.data.offlineUpdatedAt=now;
     this.save();
   }
-  simulateMarketStep(){
-    Object.keys(this.market).forEach(s=>{
-      const m=this.market[s];
-      // Small random movement with gentle mean reversion toward the base price.
-      const random=(Math.random()-.5)*m.vol;
-      const distance=(m.base-m.price)/m.base;
-      const correction=Math.max(-m.vol*.18,Math.min(m.vol*.18,distance*.08));
-      const move=random+correction;
-      m.price=Math.max(m.base*.50,Math.min(m.base*1.50,m.price*(1+move)));
-      this.history[s].push(m.price);
-      if(this.history[s].length>70)this.history[s].shift();
-    });
+
+  simulateOfflineTime(elapsedMs){
+    if(!Number.isFinite(elapsedMs)||elapsedMs<2500)return;
+    let periods=Math.floor(elapsedMs/2500);
+
+    // For normal absences, replay every simulated tick. For very long
+    // absences, sample the period into larger chunks so an old tab cannot
+    // freeze the phone trying to process millions of ticks.
+    if(periods<=5000){
+      for(let i=0;i<periods;i++)this.simulateMarketStep();
+      return;
+    }
+
+    const chunks=2000;
+    const chunkPeriods=Math.ceil(periods/chunks);
+    for(let i=0;i<chunks;i++){
+      const remaining=periods-i*chunkPeriods;
+      if(remaining<=0)break;
+      const n=Math.min(chunkPeriods,remaining);
+      // Aggregate many 2.5-second moves into one larger simulated move.
+      // Volatility scales approximately with sqrt(time), while mean
+      // reversion is still applied by simulateMarketStep.
+      Object.keys(this.market).forEach(sym=>{
+        const m=this.market[sym];
+        const originalVol=m.vol;
+        m.vol=originalVol*Math.sqrt(n);
+        this.simulateOneMarketStep(sym);
+        m.vol=originalVol;
+      });
+    }
   }
 
+  simulateOneMarketStep(s){
+    const m=this.market[s];
+    const random=(Math.random()-.5)*m.vol;
+    const distance=(m.base-m.price)/m.base;
+    const correction=Math.max(-m.vol*.18,Math.min(m.vol*.18,distance*.08));
+    const move=random+correction;
+    m.price=Math.max(m.base*.50,Math.min(m.base*1.50,m.price*(1+move)));
+    this.history[s].push(m.price);
+    if(this.history[s].length>70)this.history[s].shift();
+  }
+  simulateMarketStep(){
+    Object.keys(this.market).forEach(s=>this.simulateOneMarketStep(s));
+  }
+
+  getMarketMode(){return this.data&&this.data.marketMode?this.data.marketMode:"auto"}
+  setMarketMode(mode){
+    if(!this.data)return;
+    if(!["auto","online","offline"].includes(mode))mode="auto";
+    this.data.marketMode=mode;this.save();this.updateModeUI();
+    if(mode==="online" && !navigator.onLine){this.toast("No internet connection — using offline simulation.");}
+    else this.toast(mode==="online"?"Online simulation enabled":mode==="offline"?"Offline simulation enabled":"Automatic mode enabled");
+  }
+  async checkConnection(){
+    const started=Date.now();
+    try{
+      if(navigator.onLine===false)throw new Error("offline");
+      const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),4500);
+      await fetch("https://www.gstatic.com/generate_204?mf="+Date.now(),{method:"GET",cache:"no-store",mode:"no-cors",signal:controller.signal});
+      clearTimeout(timer);this.connectionOnline=true;this.lastHeartbeat=Date.now();
+    }catch(e){this.connectionOnline=false;}
+    this.updateModeUI();
+    return this.connectionOnline;
+  }
+  updateModeUI(){
+    const requested=this.getMarketMode();
+    const online=this.connectionOnline && navigator.onLine!==false;
+    const effective=requested==="offline"?"offline":(requested==="online"?(online?"online":"offline"):(online?"online":"offline"));
+    const dot=document.getElementById("modeDot"),title=document.getElementById("modeTitle"),status=document.getElementById("modeStatus");
+    if(!dot||!title||!status)return;
+    dot.classList.remove("online","offline");dot.classList.add(effective);
+    title.textContent=effective==="online"?"Online simulation":"Offline simulation";
+    if(requested==="online"&&!online)status.textContent="Internet unavailable — safely running offline.";
+    else if(requested==="offline")status.textContent="No network required. Saved time is replayed when you return.";
+    else status.textContent=online?"Internet detected. Simulation is running online." : "No internet detected. Simulation is running offline.";
+    ["modeAuto","modeOnline","modeOffline"].forEach(id=>document.getElementById(id)?.classList.remove("active"));
+    document.getElementById(requested==="auto"?"modeAuto":requested==="online"?"modeOnline":"modeOffline")?.classList.add("active");
+  }
+  onlineStep(){
+    // Online mode is still paper trading. The connection is only used as a
+    // health check; the six fictional assets are never replaced by real-money
+    // or real-exchange orders.
+    this.simulateMarketStep();
+  }
   money(n){return Number(n).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
   makeHistory(price){let a=[];let p=price;for(let i=0;i<55;i++){p*=1+(Math.random()-.49)*.012;a.push(p)}return a}
   toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(this.toastTimer);this.toastTimer=setTimeout(()=>t.classList.remove("show"),2300)}
@@ -436,6 +513,11 @@ class MarketForge {
     document.getElementById("buyBtn").onclick=()=>this.trade("buy");
     document.getElementById("sellBtn").onclick=()=>this.trade("sell");
     document.getElementById("globalSearch").oninput=e=>this.globalSearch(e.target.value);
+    document.getElementById("modeAuto").onclick=()=>this.setMarketMode("auto");
+    document.getElementById("modeOnline").onclick=()=>this.setMarketMode("online");
+    document.getElementById("modeOffline").onclick=()=>this.setMarketMode("offline");
+    window.addEventListener("online",()=>{this.connectionOnline=true;this.updateModeUI();this.toast("Internet connection restored • Online simulation available");});
+    window.addEventListener("offline",()=>{this.connectionOnline=false;this.updateModeUI();this.toast("Internet lost • Switched safely to offline simulation");});
   }
   login(){this.showAuth("signin")}
   buildQuestions(){
@@ -538,7 +620,16 @@ class MarketForge {
       const el=document.createElement("div");el.className="card note";el.innerHTML=`<h4>${n[0]}</h4><p>${n[1]}</p><span class="tag">${n[2]}</span>`;box.appendChild(el);
     });
   }
-  marketTick(){this.simulateMarketStep();this.data.lastMarketAt=Date.now();this.save();this.refreshMarketOnly()}
+  marketTick(){
+    if(!this.data)return;
+    const requested=this.getMarketMode();
+    const online=this.connectionOnline&&navigator.onLine!==false;
+    if(requested==="online"&&!online)this.simulateMarketStep();
+    else if(requested==="offline")this.simulateMarketStep();
+    else this.onlineStep();
+    this.data.lastMarketAt=Date.now();this.save();this.refreshMarketOnly();
+    if((requested==="online"||requested==="auto") && Date.now()-this.lastHeartbeat>30000)this.checkConnection();
+  }
   refreshMarketOnly(){
     this.renderWatch();this.renderMarkets();this.renderSimulator();this.drawCharts();
   }
@@ -673,22 +764,18 @@ class MarketForge {
     if(splash){splash.classList.add("hide");window.setTimeout(()=>splash.remove(),500);}
     this.bind();
     if(!this.account){this.showAuth("signin");return;}
-    this.refresh();this.nav("dashboard");this.tick=setInterval(()=>this.marketTick(),2500);
+    this.refresh();this.nav("dashboard");this.updateModeUI();
+    this.checkConnection();
+    this.tick=setInterval(()=>this.marketTick(),2500);
     window.addEventListener("resize",()=>this.drawCharts());
     document.addEventListener("visibilitychange",()=>{if(!this.account)return;if(document.visibilityState==="hidden")this.save();else{this.restoreMarketState();this.refresh()}});
     window.addEventListener("pagehide",()=>{if(this.account)this.save()});
   }
 }
-window.addEventListener("error",e=>{
-  const splash=document.getElementById("splashScreen");
-  if(splash)splash.classList.add("hide");
-  const err=document.getElementById("authError");
-  if(err && !window.app?.account)err.textContent="MarketForge could not start. Please refresh the page.";
-});
 window.app=new MarketForge();
 window.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelectorAll(".modal.open").forEach(m=>m.classList.remove("open"))});
 window.addEventListener("DOMContentLoaded",()=>{window.app.init()});
 
 </script>
 </body>
-    </html>
+  </html>
